@@ -1,39 +1,27 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { AuthContext } from "../../context/authContext";
 import { NavListItem } from "./NavListItem";
 
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const loginHandler = () => {
-    setIsLoggedIn(true);
-  };
-
-  const logoutHandler = () => {
-    setIsLoggedIn(false);
-  };
+  const authContext = useContext(AuthContext);
 
   return (
     <nav className="flex justify-center bg-slate-300 max-w-full">
       <ul className="flex flex-row gap-x-3 p-2 ">
         <li>
-          <NavLink
-            to="/"
-            // style={({ isActive }) => (isActive ? activeStyle : undefined)}
-          >
+          <NavLink to="/">
             <img src="img/logo.png" className="h-10" alt="tasks logo"></img>
           </NavLink>
         </li>
         <NavListItem to="/" title="Home" />
         <NavListItem to="workspaces" title="Workspaces" />
 
-
-        {isLoggedIn ? (
+        {authContext.isAuthenticated ? (
           <li>
             <NavLink
               to="login"
-              // style={({ isActive }) => (isActive ? activeStyle : undefined)}
-              onClick={logoutHandler}
+              onClick={authContext.logout}
               className={({ isActive }) =>
                 `${
                   isActive ? "bg-indigo-500" : "bg-slate-400"
@@ -45,33 +33,8 @@ export default function Navbar() {
           </li>
         ) : (
           <>
-            <li>
-              <NavLink
-                to="login"
-                onClick={loginHandler}
-                className={({ isActive }) =>
-                  `${
-                    isActive ? "bg-indigo-500" : "bg-slate-400"
-                  } inline-block px-5 py-2 rounded-md  hover:bg-indigo-400 tracking-wider font-semibold text-sm text-gray-900 shadow-lg sm:text-base`
-                }
-              >
-                Login
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="signup"
-                // style={({ isActive }) => (isActive ? activeStyle : undefined)}
-                className={({ isActive }) =>
-                  `${
-                    isActive ? "bg-indigo-500" : "bg-slate-400"
-                  } inline-block px-5 py-2 rounded-md  hover:bg-indigo-400 tracking-wider font-semibold text-sm text-gray-900 shadow-lg sm:text-base`
-                }
-              >
-                Signup
-              </NavLink>
-            </li>
+            <NavListItem to="login" title="Login" />
+            <NavListItem to="signup" title="Signup" />
           </>
         )}
       </ul>
