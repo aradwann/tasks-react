@@ -1,35 +1,35 @@
 import { useNavigate } from "react-router-dom";
-import React, { useContext } from "react";
-import API from "../../api/api";
+import React, { useContext, useState } from "react";
 import { FormInput } from "../common/form/FormInput";
 import { Label } from "../common/form/Label";
 import { SubmitButton } from "../common/form/SubmitButton";
 import { AuthContext } from "../../context/authContext";
+import { ErrorToast } from "../common/toast/ErrorToast";
+
+type LoginValues = {
+  username: string;
+  password: string;
+};
 
 export default function LoginForm() {
-  const navigate = useNavigate();
   const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
 
     const formValues = Object.fromEntries(formData);
 
-    const response = await API.post("auth/login", formValues);
+    ////////////////// AuthContext line ////////////////
+    authContext.login(
+      formValues.username as string,
+      formValues.password as string
+    );
 
-    if (response.status === 200) {
-      const accessToken = response.data.access_token;
-      localStorage.setItem("jwt", accessToken);
-      ////////////////// AuthContext line ////////////////
-      authContext.login(
-        formValues.username as string,
-        formValues.password as string
-      );
+    if (authContext.isAuthenticated) {
       navigate("/");
-    } else {
-      alert("you are not logged in ");
     }
   };
 
@@ -61,6 +61,13 @@ export default function LoginForm() {
 
         <SubmitButton title="Login" />
       </form>
+      {authContext.errorMsg && (
+        <ErrorToast
+          title="login error"
+          message={authContext.errorMsg}
+          date={new Date()}
+        />
+      )}
     </div>
   );
 }

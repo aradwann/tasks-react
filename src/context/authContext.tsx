@@ -1,4 +1,5 @@
 import { createContext, FC, useState } from "react";
+import API from "../api/api";
 
 interface Props {
   children: React.ReactNode;
@@ -6,12 +7,16 @@ interface Props {
 
 type AuthContextState = {
   isAuthenticated: boolean;
+  token: string;
+  errorMsg: string;
   login: (username: string, password: string) => void;
   logout: () => void;
 };
 
 const AuthContextDefaultValues: AuthContextState = {
   isAuthenticated: false,
+  token: "",
+  errorMsg: "",
   login: (username, password) => {},
   logout: () => {},
 };
@@ -21,19 +26,42 @@ export const AuthContext = createContext<AuthContextState>(
 );
 
 export const AuthProvider: FC<Props> = ({ children }) => {
+  ////////// state hooks /////////////////////
   const [auth, setAuth] = useState<boolean>(
     AuthContextDefaultValues.isAuthenticated
   );
+  const [token, setToken] = useState<string>(AuthContextDefaultValues.token);
+  const [errorMsg, setErrorMsg] = useState<string>(
+    AuthContextDefaultValues.errorMsg
+  );
 
-  const login = (username: string, password: string) => setAuth(true);
-  const logout = () => setAuth(false);
+  const login = async (username: string, password: string) => {
+    try {
+      const response = await API.post("auth/login", { username, password });
+      const accessToken = response.data.access_token;
+      localStorage.setItem("jwt", accessToken);
+      setToken(accessToken);
+      setErrorMsg("");
+      setAuth(true);
+    } catch (err: any) {
+      setErrorMsg(err.response.data.message);
+    }
+  };
+
+  const logout = () => {
+    setAuth(false);
+    setToken("");
+    localStorage.removeItem("jwt");
+  };
 
   return (
     <AuthContext.Provider
       value={{
+        token,
         isAuthenticated: auth,
         login,
         logout,
+        errorMsg,
       }}
     >
       {children}
