@@ -14,7 +14,7 @@ type AuthContextState = {
 };
 
 const AuthContextDefaultValues: AuthContextState = {
-  isAuthenticated: false,
+  isAuthenticated: localStorage.getItem("jwt") ? true : false,
   token: "",
   errorMsg: "",
   login: (username, password) => {},
