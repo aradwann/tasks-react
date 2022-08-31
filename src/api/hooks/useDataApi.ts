@@ -1,26 +1,63 @@
-import { useEffect, useState, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import API from "../api";
 
-export function useDataApi<T>(initialData: T, url: string) {
-  const [data, setData] = useState<T>(initialData);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+type ActionType = "FETCH_INIT" | "FETCH_SUCCESS" | "FETCH_FAILURE";
+type Action<T> = {
+  type: ActionType;
+  payload?: T;
+};
+
+type State<T> = {
+  isLoading: boolean;
+  error: string;
+  data: T;
+};
+
+export function useDataApi<T>(
+  initialData: T,
+  url: string
+): [State<T>, () => Promise<void>] {
+  function dataFetchReducer(state: State<T>, action: Action<T>): State<T> {
+    switch (action.type) {
+      case "FETCH_INIT":
+        return { ...state, isLoading: true, error: "" };
+
+      case "FETCH_SUCCESS":
+        return {
+          ...state,
+          isLoading: false,
+          error: "",
+          data: action.payload!,
+        };
+
+      case "FETCH_FAILURE":
+        return { ...state };
+      default:
+        throw new Error();
+    }
+  }
+  const [state, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    error: "",
+    data: initialData,
+  });
 
   const fetchData = async () => {
-    setIsLoading(true);
+    dispatch({ type: "FETCH_INIT" });
     try {
       const response = await API.get<T>(url);
-      const data = response.data;
-      setData(data);
+      const action: Action<T> = {
+        type: "FETCH_SUCCESS",
+        payload: response.data,
+      };
+      dispatch(action);
     } catch (error: any) {
-      setError(error.response.data.message);
+      dispatch({ type: "FETCH_FAILURE", payload: error.response.data.message });
     }
-
-    setIsLoading(false);
   };
   useEffect(() => {
     fetchData();
   }, []);
 
-  return { data, isLoading, error, fetchData };
+  return [state, fetchData];
 }
