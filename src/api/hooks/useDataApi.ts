@@ -31,7 +31,11 @@ export function useDataApi<T>(
         };
 
       case "FETCH_FAILURE":
-        return { ...state };
+        return {
+          ...state,
+          isLoading: false,
+          error: "There is something wrong",
+        };
       default:
         throw new Error();
     }
