@@ -8,6 +8,7 @@ import LoginForm from "./components/auth/LoginForm";
 import { AuthProvider } from "./context/authContext";
 import WorkspacesPage from "./components/workspaces/WorkspacesPage";
 import CreateWorkspaceForm from "./components/workspaces/CreateWorkspaceForm";
+import WorkspaceDetailsPage from "./components/workspaces/WorkspaceDetailsPage";
 
 function App() {
   return (
@@ -18,6 +19,11 @@ function App() {
         <Route path="signup" element={<SignupForm />} />
         <Route path="login" element={<LoginForm />} />
         <Route path="workspaces" element={<WorkspacesPage />} />
+        <Route
+          path="workspaces/:workspaceId"
+          element={<WorkspaceDetailsPage />}
+        />
+
         <Route path="create-workspace" element={<CreateWorkspaceForm />} />
       </Routes>
     </AuthProvider>

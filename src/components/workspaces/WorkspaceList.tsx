@@ -1,15 +1,14 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDataApi } from "../../api/hooks/useDataApi";
 import { Workspace } from "./workspace.interface";
 import WorkspaceListItem from "./WorkspaceListItem";
 
 export default function WorkspaceList() {
   const [state, fetchData] = useDataApi<Workspace[]>([], "/workspaces/me");
+
   const workspacesListItems = state.data.map((workspace) => (
-    <WorkspaceListItem
-      id={workspace.id}
-      title={workspace.title}
-      description={workspace.description}
-    />
+    <WorkspaceListItem {...workspace} key={workspace.id} />
   ));
 
   return (

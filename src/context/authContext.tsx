@@ -40,6 +40,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
       const response = await API.post("auth/login", { username, password });
       const accessToken = response.data.access_token;
       localStorage.setItem("jwt", accessToken);
+      API.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
       setToken(accessToken);
       setErrorMsg("");
       setAuth(true);
@@ -51,6 +52,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const logout = () => {
     setAuth(false);
     setToken("");
+    API.defaults.headers.common["Authorization"] = "";
     localStorage.removeItem("jwt");
   };
 
