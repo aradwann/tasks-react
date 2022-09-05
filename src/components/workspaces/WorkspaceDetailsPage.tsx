@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDataApi } from "../../api/hooks/useDataApi";
+import TaskList from "../tasks/TaskList";
 import { Workspace } from "./workspace.interface";
 import WorkspaceCard from "./WorkspaceCard";
-import WorkspaceList from "./WorkspaceList";
+import WorkspaceUsersCard from "./WorkspaceUsersCard";
 
 export default function WorkspaceDetailsPage() {
   let { workspaceId } = useParams<string>();
@@ -21,17 +21,24 @@ export default function WorkspaceDetailsPage() {
 
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate("/create-task");
+    navigate(`/workspaces/${workspaceId}/create-task`);
   };
   return (
-    <div className="flex flex-col">
-      <h1 className="flex flex-row justify-center">Welcome to Workspace</h1>
+    <div className="flex flex-col w-full">
       {state.isLoading ? (
         <h1>Loading</h1>
       ) : state.error ? (
         <h1>{state.error}</h1>
       ) : (
-        <WorkspaceCard {...state.data} />
+        <>
+          <h1 className="flex flex-row justify-center text-3xl">
+            Welcome to {state.data.title} Workspace
+          </h1>
+          <div className="flex flex-row justify-center w-full">
+            <WorkspaceCard {...state.data} />
+            <WorkspaceUsersCard />
+          </div>
+        </>
       )}
       <div className="flex flex-row justify-center w-full">
         <button
@@ -42,7 +49,9 @@ export default function WorkspaceDetailsPage() {
           Create Task
         </button>
       </div>
-      <div className="flex flex-row justify-center w-full px-8"></div>
+      <div className="flex flex-row justify-center w-full px-8">
+        <TaskList />
+      </div>
     </div>
   );
 }

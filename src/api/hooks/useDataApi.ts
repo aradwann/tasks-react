@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import API from "../api";
 
 type ActionType = "FETCH_INIT" | "FETCH_SUCCESS" | "FETCH_FAILURE";
@@ -46,7 +46,7 @@ export function useDataApi<T>(
     data: initialData,
   });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     dispatch({ type: "FETCH_INIT" });
     try {
       const response = await API.get<T>(url);
@@ -58,10 +58,10 @@ export function useDataApi<T>(
     } catch (error: any) {
       dispatch({ type: "FETCH_FAILURE", payload: error.response.data.message });
     }
-  };
+  }, [url]);
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return [state, fetchData];
 }

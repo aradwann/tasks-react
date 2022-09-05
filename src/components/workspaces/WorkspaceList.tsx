@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useDataApi } from "../../api/hooks/useDataApi";
 import { Workspace } from "./workspace.interface";
 import WorkspaceListItem from "./WorkspaceListItem";
@@ -10,6 +11,11 @@ export default function WorkspaceList() {
     Workspace[]
   >([], "/workspaces/created");
 
+  useEffect(() => {
+    fetchCreatedWorkspaces();
+    fetchJoinedWorkspaces();
+  }, [fetchCreatedWorkspaces, fetchJoinedWorkspaces]);
+  
   const joinedWorkspacesListItems = joinedWorkspacesState.data.map(
     (workspace) => <WorkspaceListItem {...workspace} key={workspace.id} />
   );
@@ -20,7 +26,9 @@ export default function WorkspaceList() {
   return (
     <div className="flex flex-col justify-center w-full">
       <div className="flex flex-col justify-center w-full">
-        <h2 className="flex flex-row justify-center text-3xl">Created Workspaces</h2>
+        <h2 className="flex flex-row justify-center text-3xl">
+          Created Workspaces
+        </h2>
         <button
           onClick={fetchCreatedWorkspaces}
           className="bg-green-800 rounded-lg"
@@ -38,7 +46,9 @@ export default function WorkspaceList() {
         )}
       </div>
       <div className="flex flex-col justify-center w-full">
-        <h2 className="flex flex-row justify-center text-3xl">Joined Workspaces</h2>
+        <h2 className="flex flex-row justify-center text-3xl">
+          Joined Workspaces
+        </h2>
         <button
           onClick={fetchJoinedWorkspaces}
           className="bg-green-800 rounded-lg"

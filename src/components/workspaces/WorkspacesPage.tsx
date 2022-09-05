@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import  WorkspaceList  from "./WorkspaceList";
+import WorkspaceList from "./WorkspaceList";
 
 export default function WorkspacesPage() {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate("/create-workspace");
+    navigate("/workspaces/create");
   };
   return (
     <div className="flex flex-col">

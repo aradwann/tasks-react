@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Workspace } from "./workspace.interface";
 
 export default function WorkspaceCard(workspace: Workspace) {
@@ -12,9 +11,10 @@ export default function WorkspaceCard(workspace: Workspace) {
           <p className="text-gray-700 text-base mb-4">
             {workspace.description}
           </p>
-          <p className="text-gray-900 text-xl font-medium mb-2">
-            created by username {workspace.creator.username} email
-            {workspace.creator.email}
+          <p className="text-gray-900 text-lg font-medium mb-2">
+            created by username {workspace.creator.username}
+            <br></br>
+            email: {workspace.creator.email}
           </p>
         </div>
         <div className="py-3 px-6 border-t border-gray-300 text-gray-600">

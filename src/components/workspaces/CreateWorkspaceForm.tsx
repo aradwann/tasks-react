@@ -1,10 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../../api/api";
 import { FormInput } from "../common/form/FormInput";
 import { Label } from "../common/form/Label";
 import { SubmitButton } from "../common/form/SubmitButton";
 
 export default function CreateWorkspaceForm() {
+  const navigate = useNavigate();
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -15,7 +17,7 @@ export default function CreateWorkspaceForm() {
     try {
       const response = await API.post("/workspaces", formValues);
       if (response.status === 201) {
-        alert("workspace has been created ");
+        navigate("/workspaces");
       } else if (response.status === 500) {
         alert("there is something wrong with the server ");
       } else {
