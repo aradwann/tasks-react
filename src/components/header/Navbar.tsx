@@ -15,22 +15,24 @@ export default function Navbar() {
           </NavLink>
         </li>
         <NavListItem to="/" title="Home" />
-        <NavListItem to="workspaces" title="Workspaces" />
 
         {authContext.isAuthenticated ? (
-          <li>
-            <NavLink
-              to="login"
-              onClick={authContext.logout}
-              className={({ isActive }) =>
-                `${
-                  isActive ? "bg-indigo-500" : "bg-slate-400"
-                } inline-block px-5 py-2 rounded-md  hover:bg-indigo-400 tracking-wider font-semibold text-sm text-gray-900 shadow-lg sm:text-base`
-              }
-            >
-              logout
-            </NavLink>
-          </li>
+          <>
+            <NavListItem to="workspaces" title="Workspaces" />
+            <li>
+              <NavLink
+                to="login"
+                onClick={authContext.logout}
+                className={({ isActive }) =>
+                  `${
+                    isActive ? "bg-indigo-500" : "bg-slate-400"
+                  } inline-block px-5 py-2 rounded-md  hover:bg-indigo-400 tracking-wider font-semibold text-sm text-gray-900 shadow-lg sm:text-base`
+                }
+              >
+                logout
+              </NavLink>
+            </li>
+          </>
         ) : (
           <>
             <NavListItem to="login" title="Login" />
