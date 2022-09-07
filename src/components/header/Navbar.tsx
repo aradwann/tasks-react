@@ -20,6 +20,9 @@ export default function Navbar() {
           {authContext.isAuthenticated ? (
             <>
               <NavListItem to="workspaces" title="Workspaces" />
+              {authContext.user && (
+                <NavListItem to="me" title={authContext.user.username} />
+              )}
               <li>
                 <NavLink
                   to="login"

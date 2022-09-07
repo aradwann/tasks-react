@@ -5,10 +5,15 @@ interface Props {
   children: React.ReactNode;
 }
 
+interface User {
+  username: string;
+}
+
 type AuthContextState = {
   isAuthenticated: boolean;
   token: string;
   errorMsg: string;
+  user: User | undefined;
   login: (username: string, password: string) => void;
   logout: () => void;
 };
@@ -17,6 +22,7 @@ const AuthContextDefaultValues: AuthContextState = {
   isAuthenticated: localStorage.getItem("jwt") ? true : false,
   token: "",
   errorMsg: "",
+  user: undefined,
   login: (username, password) => {},
   logout: () => {},
 };
@@ -34,6 +40,9 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const [errorMsg, setErrorMsg] = useState<string>(
     AuthContextDefaultValues.errorMsg
   );
+  const [user, setUser] = useState<User | undefined>(
+    AuthContextDefaultValues.user
+  );
 
   const login = async (username: string, password: string) => {
     try {
@@ -44,6 +53,12 @@ export const AuthProvider: FC<Props> = ({ children }) => {
       setToken(accessToken);
       setErrorMsg("");
       setAuth(true);
+      const userResponse = await API.get<User>("users/me");
+      const user = userResponse.data;
+      console.log({ user });
+      if (user) {
+        setUser(user);
+      }
     } catch (err: any) {
       setErrorMsg(err.response.data.message);
     }
@@ -63,6 +78,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
         isAuthenticated: auth,
         login,
         logout,
+        user,
         errorMsg,
       }}
     >
